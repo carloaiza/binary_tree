@@ -1,5 +1,6 @@
 package com.binary_tree.binary_tree.controller;
 
+import com.binary_tree.binary_tree.exception.BinaryTreeException;
 import com.binary_tree.binary_tree.model.Boy;
 import com.binary_tree.binary_tree.service.BinaryTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class BinaryTreeController {
 
     @PostMapping
     public @ResponseBody
-    ResponseEntity<?> addBoy(@Valid @RequestBody Boy boy)   {
-        return null;
+    ResponseEntity<?> addBoy(@Valid @RequestBody Boy boy) throws BinaryTreeException {
+        return binaryTreeService.addBoy(boy);
     }
 
 }

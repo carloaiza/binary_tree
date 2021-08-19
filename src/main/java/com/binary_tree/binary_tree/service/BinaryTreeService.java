@@ -1,6 +1,7 @@
 package com.binary_tree.binary_tree.service;
 
 import com.binary_tree.binary_tree.application.dto.ResponseBinaryTreeDto;
+import com.binary_tree.binary_tree.controller.dto.ErrorDTO;
 import com.binary_tree.binary_tree.exception.BinaryTreeException;
 import com.binary_tree.binary_tree.model.BinaryTree;
 import com.binary_tree.binary_tree.model.Boy;
@@ -16,19 +17,21 @@ public class BinaryTreeService {
     private BinaryTree binaryTree= new BinaryTree();
 
 
-    public ResponseEntity<ResponseBinaryTreeDto> addBoy(Boy boy)
+    public ResponseEntity<ResponseBinaryTreeDto> addBoy(Boy boy) throws BinaryTreeException
     {
-        try {
+        //try {
             binaryTree.addNode(boy);
-            return new ResponseEntity<ResponseBinaryTreeDto>(
+            return new ResponseEntity<>(
                     new ResponseBinaryTreeDto(boy,"Se ha guardado exitosamente",
                             null),HttpStatus.OK);
-        } catch (BinaryTreeException e) {
-            List<String> errors = new ArrayList<>();
-            errors.add(e.getMessage());
+        /*} catch (BinaryTreeException e) {
+            List<ErrorDTO> errors = new ArrayList<>();
+            errors.add(new ErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()));
             return new ResponseEntity<ResponseBinaryTreeDto>(
                     new ResponseBinaryTreeDto(boy,null,errors
                             ),HttpStatus.CONFLICT);
         }
+
+         */
     }
 }
