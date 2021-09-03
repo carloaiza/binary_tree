@@ -3,6 +3,7 @@ package com.binary_tree.binary_tree.controller;
 import com.binary_tree.binary_tree.application.dto.ResponseBinaryTreeDto;
 import com.binary_tree.binary_tree.controller.dto.ErrorDTO;
 import com.binary_tree.binary_tree.exception.BinaryTreeException;
+import com.binary_tree.binary_tree.exception.DataNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,13 +16,21 @@ import java.util.List;
 
 @ControllerAdvice
 public class ErrorHandlerController {
+    @ExceptionHandler(DataNotFoundException.class)
+    protected ResponseEntity<?> handle(DataNotFoundException ex){
+
+        List<ErrorDTO> errors = new ArrayList<>();
+        errors.add(new ErrorDTO(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+        ResponseBinaryTreeDto response = new ResponseBinaryTreeDto( null, ex.getMessage(), errors);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(BinaryTreeException.class)
     protected ResponseEntity<?> handle(BinaryTreeException ex){
 
         List<ErrorDTO> errors = new ArrayList<>();
         errors.add(new ErrorDTO(HttpStatus.CONFLICT.value(), ex.getMessage()));
-        String message = "Ha ocurrido una falla de lógica de negocio";
-        ResponseBinaryTreeDto response = new ResponseBinaryTreeDto( null, message, errors);
+        ResponseBinaryTreeDto response = new ResponseBinaryTreeDto( null, ex.getMessage(), errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

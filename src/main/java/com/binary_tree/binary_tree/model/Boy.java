@@ -11,7 +11,8 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 public class Boy {
-
+    @Positive
+    @NotNull
     private int identification;
     @NotNull
     @NotBlank
