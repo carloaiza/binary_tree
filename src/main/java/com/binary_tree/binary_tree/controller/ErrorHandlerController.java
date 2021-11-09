@@ -4,6 +4,7 @@ import com.binary_tree.binary_tree.application.dto.ResponseBinaryTreeDto;
 import com.binary_tree.binary_tree.controller.dto.ErrorDTO;
 import com.binary_tree.binary_tree.exception.BinaryTreeException;
 import com.binary_tree.binary_tree.exception.DataNotFoundException;
+import com.binary_tree.binary_tree.exception.NTreeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,6 +46,15 @@ public class ErrorHandlerController {
         });
         String message = "Algunos campos son inválidos o faltantes, por favor corrija los errores y vuelva a intentarlo";
         ResponseBinaryTreeDto response = new ResponseBinaryTreeDto( null, message, listErrors);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NTreeException.class)
+    protected ResponseEntity<?> handle(NTreeException ex){
+
+        List<ErrorDTO> errors = new ArrayList<>();
+        errors.add(new ErrorDTO(HttpStatus.CONFLICT.value(), ex.getMessage()));
+        ResponseBinaryTreeDto response = new ResponseBinaryTreeDto( null, ex.getMessage(), errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
