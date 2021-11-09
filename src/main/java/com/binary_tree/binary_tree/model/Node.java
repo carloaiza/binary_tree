@@ -2,6 +2,7 @@ package com.binary_tree.binary_tree.model;
 
 import com.binary_tree.binary_tree.controller.dto.BoyGradeDTO;
 import com.binary_tree.binary_tree.exception.BinaryTreeException;
+import com.binary_tree.binary_tree.exception.DataNotFoundException;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -120,14 +121,14 @@ public class Node {
         return this.grade;
     }
 
-    public List<BoyGradeDTO> getBoysGrade() {
+    public List<BoyGradeDTO> boysGrade() {
         List<BoyGradeDTO> listBoys = new ArrayList<>();
         listBoys.add(new BoyGradeDTO(this.getData(),this.grade));
         if (this.getLeft() != null) {
-            listBoys.addAll(this.getLeft().getBoysGrade());
+            listBoys.addAll(this.getLeft().boysGrade());
         }
         if (this.getRight() != null) {
-            listBoys.addAll(this.getRight().getBoysGrade());
+            listBoys.addAll(this.getRight().boysGrade());
         }
         return listBoys;
     }
@@ -162,5 +163,129 @@ public class Node {
                }
            }
            return listBoysLevel;
+    }
+
+
+    public Boy findLargest()
+    {
+        if(this.getRight()==null)
+        {
+            return this.getData();
+        }
+        else
+        {
+            return this.getRight().findLargest();
+        }
+    }
+
+    public Boy findSmallest()
+    {
+        if(this.getLeft()==null)
+        {
+            return this.getData();
+        }
+        else
+        {
+            return this.getLeft().findSmallest();
+        }
+    }
+
+    public void deleteNode(int identificationToDelete) throws DataNotFoundException
+    {
+        if(identificationToDelete < this.data.getIdentification())
+        {
+            ///Preguntar a la izq
+            if(this.getLeft()!=null)
+            {
+                if(this.getLeft().getData().getIdentification()==identificationToDelete)
+                {
+                    //ubicado en el papa del que debo eliminar
+                    if(this.getLeft().isLeaf())
+                    {
+                        this.setLeft(null);
+                    }
+                    else if(this.getLeft().getLeft()==null && this.getLeft().getRight()!=null)
+                    {
+                        this.setLeft(this.getLeft().getRight());
+                    }
+                    else if(this.getLeft().getLeft()!=null && this.getLeft().getRight()==null)
+                    {
+                        this.setLeft(this.getLeft().getLeft());
+                    }
+                    else
+                    {
+                        ///Los dos estan llenos
+                        //obtener el dato por el que lo voy a reemplazar
+                        Boy dataReplace=null;
+                        if(this.getLeft().getLeft().getGrade() <  this.getLeft().getRight().getGrade())
+                        {
+                            dataReplace= this.getLeft().getLeft().findLargest();
+                        }
+                        else
+                        {
+                            dataReplace= this.getLeft().getRight().findSmallest();
+                        }
+                        this.getLeft().deleteNode(dataReplace.getIdentification());
+                        this.getLeft().setData(dataReplace);
+                    }
+                }
+                else
+                {
+                    this.getLeft().deleteNode(identificationToDelete);
+                }
+            }
+            else
+            {
+                throw new DataNotFoundException("El dato a eliminar no existe");
+            }
+        }
+        else
+        {
+            //preguntar a la derecha
+            if(this.getRight()!=null)
+            {
+                if(this.getRight().getData().getIdentification()==identificationToDelete)
+                {
+                    //ubicado en el papa del que debo eliminar
+                    if(this.getRight().isLeaf())
+                    {
+                        this.setRight(null);
+                    }
+                    else if(this.getRight().getLeft()==null && this.getRight().getRight()!=null)
+                    {
+                        this.setRight(this.getRight().getRight());
+                    }
+                    else if(this.getRight().getLeft()!=null && this.getRight().getRight()==null)
+                    {
+                        this.setRight(this.getRight().getLeft());
+                    }
+                    else
+                    {
+                        ///Los dos estan llenos
+                        //obtener el dato por el que lo voy a reemplazar
+                        Boy dataReplace=null;
+                        if(this.getRight().getLeft().getGrade() <  this.getRight().getRight().getGrade())
+                        {
+                            dataReplace= this.getRight().getLeft().findLargest();
+                        }
+                        else
+                        {
+                            dataReplace= this.getRight().getRight().findSmallest();
+                        }
+                        this.getRight().deleteNode(dataReplace.getIdentification());
+                        this.getRight().setData(dataReplace);
+                    }
+                }
+                else
+                {
+                    this.getRight().deleteNode(identificationToDelete);
+                }
+            }
+            else
+            {
+                throw new DataNotFoundException("El dato a eliminar no existe");
+            }
+        }
+
     }
 }

@@ -68,7 +68,7 @@ public class BinaryTree {
     {
         if(root!=null)
         {
-            return root.getBoysGrade();
+            return root.boysGrade();
         }
         throw new DataNotFoundException("No hay datos que mostrar");
     }
@@ -93,6 +93,45 @@ public class BinaryTree {
             throw new BinaryTreeException("El level ingresado no existe");
         }
         throw new DataNotFoundException("No hay datos que mostrar");
+    }
+
+
+    public Boy findLargest() throws DataNotFoundException
+    {
+        if(root!=null)
+        {
+            return root.findLargest();
+        }
+        throw new DataNotFoundException("No hay datos que mostrar");
+    }
+
+    public Boy findSmallest() throws DataNotFoundException
+    {
+        if(root!=null)
+        {
+            return root.findSmallest();
+        }
+        throw new DataNotFoundException("No hay datos que mostrar");
+    }
+
+    public void deleteNode(int identificationToDelete) throws DataNotFoundException
+    {
+        if(root!=null)
+        {
+            if(root.getData().getIdentification()==identificationToDelete)
+            {
+                Node temp= new Node(new Boy(identificationToDelete+1,"temp",(byte)2,"Manizales"));
+                temp.setLeft(root);
+                temp.deleteNode(identificationToDelete);
+                root = temp.getLeft();
+            }
+            else
+            {
+                root.deleteNode(identificationToDelete);
+            }
+        }
+        else
+            throw new DataNotFoundException("No hay datos para eliminar");
     }
 
 }
